@@ -1,6 +1,6 @@
 {
   "name": "le-livre-des-rois",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Le livre des rois : histoire légendaire des rois de Perse",
   "main": "index.js",
   "scripts": {
