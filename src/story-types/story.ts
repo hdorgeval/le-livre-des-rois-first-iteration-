@@ -11,3 +11,8 @@ export interface StoryNode {
 }
 
 export type StoryNodeType = 'start of period' | 'end of period' | 'unknown' | 'town' | 'king';
+
+export interface StoryData {
+  links: StoryLink[];
+  nodes: StoryNode[];
+}

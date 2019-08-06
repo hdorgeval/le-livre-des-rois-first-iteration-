@@ -123,6 +123,33 @@ links.forEach((link): void => {
 
 const nodes = Array.from(mapNodes.values());
 
+nodes
+  .filter((node): boolean => {
+    if (node.id === boundaryLink.source.id) {
+      return false;
+    }
+    if (node.id === boundaryLink.target.id) {
+      return false;
+    }
+    const isSourceNode =
+      links
+        .map((link): StoryNode => link.source)
+        .map((sourceNode): string => sourceNode.id)
+        .filter((sourceId): boolean => sourceId === node.id).length > 0;
+
+    return !isSourceNode;
+  })
+  .forEach((node): void => {
+    const linkWeight = links
+      .filter((link): boolean => link.source.id === node.id || link.target.id === node.id)
+      .map((link): number => link.weight)[0];
+    links.push({
+      source: node,
+      target: boundaryLink.target,
+      weight: linkWeight,
+    });
+  });
+
 const graphNodeProps = `
 export interface GraphNodeProps {
   name: string;
@@ -132,7 +159,6 @@ export interface GraphNodeProps {
 `;
 
 const graphNodesTsLines: string[] = [];
-graphNodesTsLines.push(`/* eslint-disable prettier/prettier */`);
 graphNodesTsLines.push(graphNodeProps);
 graphNodesTsLines.push(`export const graphNodes: GraphNodeProps[] = [`);
 nodes.forEach((node): void => {
@@ -145,7 +171,6 @@ const graphNodeTsContent = graphNodesTsLines.join(EOL);
 writeFileSync(`${__dirname}/graph-nodes.ts`, graphNodeTsContent);
 
 const graphLinksTsLines: string[] = [];
-graphLinksTsLines.push(`/* eslint-disable prettier/prettier */`);
 
 const graphLinkProps = `
 export interface GraphLinkProps {

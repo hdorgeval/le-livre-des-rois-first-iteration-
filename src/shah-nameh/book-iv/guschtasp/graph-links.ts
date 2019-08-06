@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 
 export interface GraphLinkProps {
   value: number;
@@ -7,10 +6,11 @@ export interface GraphLinkProps {
 }
 
 export const graphLinks: GraphLinkProps[] = [
-  { source: '21083737-7d5b-426e-8268-051d077b1025', target: '2f3f6f9a-a224-4542-90d5-8e4dccb4b82d', value: 600 },
-  { source: '21083737-7d5b-426e-8268-051d077b1025', target: '4e30dfab-82d5-431a-b79b-7c220d3bc66e', value: 20 },
-  { source: '4e30dfab-82d5-431a-b79b-7c220d3bc66e', target: '4311f4d2-1ad5-4048-85c9-4a03585e9cf6', value: 20 },
-  { source: '4311f4d2-1ad5-4048-85c9-4a03585e9cf6', target: '84019b69-a139-444d-9131-583bf4fca449', value: 20 },
-  { source: '84019b69-a139-444d-9131-583bf4fca449', target: '2d27e4c7-d3f0-41c1-ab72-9501aceb14e0', value: 20 },
-  { source: '2d27e4c7-d3f0-41c1-ab72-9501aceb14e0', target: '51e1e860-b0bf-4c74-a6eb-43cc8b184845', value: 20 },
+  { source: '1ca49a0b-09eb-4936-a727-afe59710fefe', target: '0a5d6817-1aff-44db-80da-04c429f31cb6', value: 600 },
+  { source: '1ca49a0b-09eb-4936-a727-afe59710fefe', target: 'a4b1dccc-3f04-47a8-96aa-b5e6a8cb2f48', value: 20 },
+  { source: 'a4b1dccc-3f04-47a8-96aa-b5e6a8cb2f48', target: '83ad240a-8ccb-4153-8a50-7e96b86c297c', value: 20 },
+  { source: '83ad240a-8ccb-4153-8a50-7e96b86c297c', target: '101fa441-bbe7-4ab0-81bb-e37008e5efeb', value: 20 },
+  { source: '101fa441-bbe7-4ab0-81bb-e37008e5efeb', target: '4e6925df-f722-4aea-9f2b-b5530b877892', value: 20 },
+  { source: '4e6925df-f722-4aea-9f2b-b5530b877892', target: 'd91a6d51-acce-4457-91ff-3fc98e952a2c', value: 20 },
+  { source: 'd91a6d51-acce-4457-91ff-3fc98e952a2c', target: '0a5d6817-1aff-44db-80da-04c429f31cb6', value: 20 },
 ];

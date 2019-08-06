@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 
 export interface GraphNodeProps {
   name: string;
@@ -7,11 +6,11 @@ export interface GraphNodeProps {
 }
 
 export const graphNodes: GraphNodeProps[] = [
-  { name: 'GUSCHTASP', type: 'start of period', id: '21083737-7d5b-426e-8268-051d077b1025' },
-  { name: 'FIN DU REGNE DE GUSCHTASP', type: 'end of period', id: '2f3f6f9a-a224-4542-90d5-8e4dccb4b82d' },
-  { name: 'LOHRASP', type: 'unknown', id: '4e30dfab-82d5-431a-b79b-7c220d3bc66e' },
-  { name: 'Balkh', type: 'unknown', id: '4311f4d2-1ad5-4048-85c9-4a03585e9cf6' },
-  { name: 'temple du Noubehar', type: 'unknown', id: '84019b69-a139-444d-9131-583bf4fca449' },
-  { name: 'prêtre', type: 'unknown', id: '2d27e4c7-d3f0-41c1-ab72-9501aceb14e0' },
-  { name: '30 ans debout devant Dieu', type: 'unknown', id: '51e1e860-b0bf-4c74-a6eb-43cc8b184845' },
+  { name: 'GUSCHTASP', type: 'start of period', id: '1ca49a0b-09eb-4936-a727-afe59710fefe' },
+  { name: 'FIN DU REGNE DE GUSCHTASP', type: 'end of period', id: '0a5d6817-1aff-44db-80da-04c429f31cb6' },
+  { name: 'LOHRASP', type: 'unknown', id: 'a4b1dccc-3f04-47a8-96aa-b5e6a8cb2f48' },
+  { name: 'Balkh', type: 'unknown', id: '83ad240a-8ccb-4153-8a50-7e96b86c297c' },
+  { name: 'temple du Noubehar', type: 'unknown', id: '101fa441-bbe7-4ab0-81bb-e37008e5efeb' },
+  { name: 'prêtre', type: 'unknown', id: '4e6925df-f722-4aea-9f2b-b5530b877892' },
+  { name: '30 ans debout devant Dieu', type: 'unknown', id: 'd91a6d51-acce-4457-91ff-3fc98e952a2c' },
 ];

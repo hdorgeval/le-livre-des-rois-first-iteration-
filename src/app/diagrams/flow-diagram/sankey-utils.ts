@@ -32,10 +32,10 @@ export const nodeHeight = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): numbe
 
 export const nodeWidth = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number => {
   const defaultWidth = 24;
-  if (d.type === 'end of reign') {
+  if (d.type === 'end of period') {
     return defaultWidth * 2;
   }
-  if (d.type === 'start of reign') {
+  if (d.type === 'start of period') {
     return defaultWidth * 2;
   }
 
@@ -103,7 +103,7 @@ export const nameAnchor = (
   d: SankeyNode<GraphNodeProps, GraphLinkProps>,
   chartWidth: number,
 ): string => {
-  if (d.type === 'end of reign' || d.type === 'start of reign') {
+  if (d.type === 'end of period' || d.type === 'start of period') {
     return 'start';
   }
   const x0 = d.x0 || 0;
@@ -120,8 +120,8 @@ export const nameTransform = (
   const offsetY = x0 < chartWidth / 2 ? 0 : +nodeWidth(d) / 2;
   let transform = ';';
   switch (nodeType) {
-    case 'start of reign':
-    case 'end of reign':
+    case 'start of period':
+    case 'end of period':
       transform = `rotate(-90,${nameX(d, chartWidth) + offsetY},${nameY(d)})`;
       break;
 
