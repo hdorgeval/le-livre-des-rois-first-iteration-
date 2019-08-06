@@ -51,6 +51,14 @@ export const nodeName = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): string 
 };
 
 /**
+ * get the node’s id
+ * @param d : graph node
+ */
+export const nodeId = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): string => {
+  return d.id;
+};
+
+/**
  * create a GUID to reference gradient
  * @param d
  */

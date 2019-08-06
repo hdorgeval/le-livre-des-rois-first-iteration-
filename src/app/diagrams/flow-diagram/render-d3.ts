@@ -12,6 +12,7 @@ import {
   nameAnchor,
   nameTransform,
   nodeWidth,
+  nodeId,
 } from './sankey-utils';
 import * as d3 from 'd3';
 import {
@@ -38,6 +39,7 @@ export const renderD3 = (
   };
   const sankeyGenerator = sankey<GraphNodeProps, GraphLinkProps>()
     .nodeAlign(sankeyJustify)
+    .nodeId(nodeId)
     .nodeWidth(15)
     .nodePadding(10)
     .extent([
