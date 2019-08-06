@@ -190,7 +190,10 @@ export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   };
 };
 
-export const convertMarkdownToGraphData = (storyFile: PathLike): void => {
+export const convertMarkdownToGraphData = (
+  storyFile: PathLike,
+  targetDirectory = `${dirname(storyFile.toString())}`,
+): void => {
   const graphData = createGraphDataFrom(storyFile);
   const graphNodeProps = `
 export interface GraphNodeProps {
@@ -209,7 +212,7 @@ export interface GraphNodeProps {
   graphNodesTsLines.push(``);
 
   const graphNodeTsContent = graphNodesTsLines.join(EOL);
-  writeFileSync(`${dirname(storyFile.toString())}/graph-nodes.ts`, graphNodeTsContent);
+  writeFileSync(`${targetDirectory}/graph-nodes.ts`, graphNodeTsContent);
 
   const graphLinksTsLines: string[] = [];
 
@@ -232,5 +235,5 @@ export interface GraphLinkProps {
   graphLinksTsLines.push(``);
 
   const graphLinksTsContent = graphLinksTsLines.join(EOL);
-  writeFileSync(`${storyFile.toString()}/graph-links.ts`, graphLinksTsContent);
+  writeFileSync(`${targetDirectory}/graph-links.ts`, graphLinksTsContent);
 };
