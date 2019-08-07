@@ -55,8 +55,9 @@ export const renderD3 = (
   const graph: SankeyGraph<GraphNodeProps, GraphLinkProps> = sankeyGenerator(sankeyData);
   const svg = d3.select(d3Container.current);
   const colorScale = d3
-    .scaleOrdinal(d3.schemeSet1)
-    .domain(graphNodes.map((n: GraphNodeProps): string => n.name));
+    .scaleOrdinal<string>()
+    .domain(graphNodes.map((n: GraphNodeProps): string => n.name))
+    .range(['gold', 'blue', 'green', 'yellow', 'grey', 'darkgreen', 'pink', 'slateblue']);
   const color = (name: string): string => {
     const sanitizedName = name.replace(/\s/gi, '');
     return colorScale(sanitizedName);
