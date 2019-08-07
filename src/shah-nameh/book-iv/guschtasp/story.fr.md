@@ -13,3 +13,5 @@
 > > > > 30 ans debout devant Dieu
 
 # FIN DU REGNE DE GUSCHTASP
+
+![diagram](./diagram.fr.svg)
