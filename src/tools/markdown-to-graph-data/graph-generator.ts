@@ -4,42 +4,68 @@ import uuid from 'uuid/v4';
 import { PathLike, writeFileSync } from 'fs';
 import { dirname } from 'path';
 import { EOL } from 'os';
-export const getStoryBoundaries = (story: string[]): StoryLink => {
-  const boundaries = story
-    .map((line: string): string => line.trim())
-    .filter((line): boolean => line.startsWith('# '));
 
-  if (boundaries.length === 0) {
-    throw new Error('Error: Markdown is missing heading `# H1` at the beginning of the file.');
+export const getAllLeavesOf = (node: StoryNode | undefined, links: StoryLink[]): StoryNode[] => {
+  if (node === undefined) {
+    return [];
   }
-  if (boundaries.length === 1) {
-    throw new Error(
-      'Error: Markdown is missing heading `# H1` at the beginning or at the end of the file.',
+  const allLeafNodes: StoryNode[] = [];
+  const allRootNodes: StoryNode[] = [node];
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    if (allRootNodes.length === 0) {
+      return allLeafNodes;
+    }
+
+    const rootNode = allRootNodes.shift();
+    if (rootNode === undefined) {
+      continue;
+    }
+
+    const targetNodes = links
+      .filter((link): boolean => link.source.id === rootNode.id)
+      .map((link): StoryNode => link.target);
+    const leafNodes = targetNodes.filter((targetNode): boolean =>
+      links.every((link): boolean => link.source.id !== targetNode.id),
     );
+
+    if (leafNodes.length === 0) {
+      allLeafNodes.push(rootNode);
+      continue;
+    }
+
+    leafNodes.forEach((leafNode): number => allLeafNodes.push(leafNode));
+
+    const rootNodes = targetNodes.filter((targetNode): boolean =>
+      links.some((link): boolean => link.source.id === targetNode.id),
+    );
+
+    allRootNodes.push(...rootNodes);
   }
-  const boundaryLink: StoryLink = {
-    weight: 600,
-    source: {
-      id: uuid(),
-      name: (boundaries.shift() || '').replace(/#/gi, '').trim(),
-      type: 'start of period',
-    },
-    target: {
-      id: uuid(),
-      name: (boundaries.pop() || '').replace(/#/gi, '').trim(),
-      type: 'end of period',
-    },
-  };
-  return boundaryLink;
 };
 
-export const getStoryLinks = (story: string[], boundaryLink: StoryLink): StoryLink[] => {
+export const getStoryLinks = (story: string[]): StoryLink[] => {
   const links: StoryLink[] = [];
 
   const parentNodes = new Map<string, StoryNode>();
-  parentNodes.set('#', boundaryLink.source);
-
+  let previousLevel = '.';
   story.forEach((line): void => {
+    if (line.startsWith('# ')) {
+      const targetNode: StoryNode = {
+        id: uuid(),
+        name: line.replace(/#/gi, '').trim(),
+        type: 'unknown',
+      };
+      links.push({
+        weight: 20,
+        source: { id: 'root', type: 'start of period', name: '' },
+        target: targetNode,
+      });
+      parentNodes.set('#', targetNode);
+      previousLevel = '#';
+      return;
+    }
+
     if (line.startsWith('## ')) {
       const targetNode: StoryNode = {
         id: uuid(),
@@ -52,6 +78,7 @@ export const getStoryLinks = (story: string[], boundaryLink: StoryLink): StoryLi
         source: { ...(parentNodes.get('#') || { id: 'foo', type: 'unknown', name: 'bar' }) },
         target: targetNode,
       });
+      previousLevel = '##';
       return;
     }
 
@@ -69,7 +96,9 @@ export const getStoryLinks = (story: string[], boundaryLink: StoryLink): StoryLi
       parentNodes.set('>', targetNode);
       links.push({
         weight: 20,
-        source: { ...(parentNodes.get('##') || { id: 'foo', type: 'unknown', name: 'bar' }) },
+        source: {
+          ...(parentNodes.get(previousLevel) || { id: 'foo', type: 'unknown', name: 'bar' }),
+        },
         target: targetNode,
       });
       return;
@@ -119,6 +148,28 @@ export const getStoryLinks = (story: string[], boundaryLink: StoryLink): StoryLi
       });
       return;
     }
+
+    if (line.startsWith('### ')) {
+      const targetNode: StoryNode = {
+        id: uuid(),
+        name: line.replace(/###/gi, '').trim(),
+        type: 'unknown',
+      };
+      parentNodes.set('###', targetNode);
+
+      const leafNodes = getAllLeavesOf(parentNodes.get('##'), links);
+      leafNodes.forEach((leafNode): number =>
+        links.push({
+          weight: 20,
+          source: {
+            ...leafNode,
+          },
+          target: targetNode,
+        }),
+      );
+      previousLevel = '###';
+      return;
+    }
   });
 
   return links;
@@ -133,57 +184,43 @@ export const createNodesFrom = (links: StoryLink[]): StoryNode[] => {
   const nodes = Array.from(mapNodes.values());
   return nodes;
 };
+export const setLinksWeight = (links: StoryLink[], nodes: StoryNode[]): void => {
+  const clonedNodes = [...nodes];
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const node = clonedNodes.pop();
+    if (node === undefined) {
+      return;
+    }
 
-export const getLinksToEndOfPeriod = (
-  nodes: StoryNode[],
-  links: StoryLink[],
-  boundaryLink: StoryLink,
-): StoryLink[] => {
-  const linksToEndOfPeriod: StoryLink[] = [];
+    const nodeLinks = links.filter((link): boolean => link.source.id === node.id);
+    if (nodeLinks.length === 0) {
+      continue;
+    }
 
-  nodes
-    .filter((node): boolean => {
-      if (node.id === boundaryLink.source.id) {
-        return false;
-      }
-      if (node.id === boundaryLink.target.id) {
-        return false;
-      }
-      const isSourceNode =
-        links
-          .map((link): StoryNode => link.source)
-          .map((sourceNode): string => sourceNode.id)
-          .filter((sourceId): boolean => sourceId === node.id).length > 0;
+    const cumulatedWeightOfNodeChildren = nodeLinks
+      .map((link): number => link.weight)
+      .reduce((previousValue, currentValue): number => previousValue + currentValue, 0);
 
-      return !isSourceNode;
-    })
-    .forEach((node): void => {
-      const linkWeight = links
-        .filter((link): boolean => link.source.id === node.id || link.target.id === node.id)
-        .map((link): number => link.weight)[0];
-      linksToEndOfPeriod.push({
-        source: node,
-        target: boundaryLink.target,
-        weight: linkWeight,
-      });
-    });
-
-  return linksToEndOfPeriod;
+    const parentLink = links.filter((link): boolean => link.target.id === node.id).pop();
+    if (parentLink === undefined) {
+      continue;
+    }
+    parentLink.weight = cumulatedWeightOfNodeChildren;
+  }
 };
 export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const story = readAllLinesInFile(storyFile)
     .map((line): string => line.trim())
     .filter((line): boolean => line.length > 0);
 
-  const boundaryLink = getStoryBoundaries(story);
   const links: StoryLink[] = [];
-  links.push(boundaryLink);
-  links.push(...getStoryLinks(story, boundaryLink));
+
+  links.push(...getStoryLinks(story));
 
   const nodes = createNodesFrom(links);
 
-  links.push(...getLinksToEndOfPeriod(nodes, links, boundaryLink));
-
+  setLinksWeight(links, nodes);
   return {
     nodes,
     links,

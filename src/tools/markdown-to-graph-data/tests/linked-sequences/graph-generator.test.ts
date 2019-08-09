@@ -11,6 +11,6 @@ describe('Markdown Sequences', (): void => {
 
     // Then
     expect(data.nodes.length).toBe(7);
-    expect(data.links.length).toBe(7);
+    expect(data.links.length).toBe(6);
   });
 });

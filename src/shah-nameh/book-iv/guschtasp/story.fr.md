@@ -1,17 +1,24 @@
+# LOHRASP
+
+> se rend à Balkh
+>
+> > se rend au temple du Noubehar
+> >
+> > > ferme le temple
+> > > devient prêtre
+>
+> > > 30 ans debout devant Dieu
+
 # GUSCHTASP
 
 - son règne dura 100 ans
 
-## LOHRASP
-
-> Balkh
+> fils ainé de LOHRASP
+> hérite du trone de LOHRASP
 >
-> > temple du Noubehar
-> >
-> > > prêtre
-> > >
-> > > > 30 ans debout devant Dieu
+> > rend la justice
+> > soumet le monde
 
-# FIN DU REGNE DE GUSCHTASP
+# Kitaboun
 
 ![diagram](./diagram.fr.svg)

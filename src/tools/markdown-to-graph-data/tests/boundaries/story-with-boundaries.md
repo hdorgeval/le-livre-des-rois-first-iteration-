@@ -1,3 +1,0 @@
-# PERIOD
-
-# END OF PERIOD
