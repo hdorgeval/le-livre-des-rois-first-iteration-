@@ -8,6 +8,7 @@ export interface StoryNode {
   name: string;
   id: string;
   type: StoryNodeType;
+  level: number;
 }
 
 export type StoryNodeType = 'start of period' | 'end of period' | 'unknown' | 'town' | 'king';

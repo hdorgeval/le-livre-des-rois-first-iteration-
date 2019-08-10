@@ -80,7 +80,7 @@ export const nameX = (
 ): number => {
   const x0 = d.x0 || 0;
   const x1 = d.x1 || 0;
-  const result = x0 < chartWidth / 2 ? x1 + 10 : x0 - 5;
+  const result = x0 < (3 * chartWidth) / 4 ? x1 + 10 : x0 - 5;
   return result;
 };
 
@@ -107,7 +107,7 @@ export const nameAnchor = (
     return 'start';
   }
   const x0 = d.x0 || 0;
-  const result = x0 < chartWidth / 2 ? 'start' : 'end';
+  const result = x0 < (3 * chartWidth) / 4 ? 'start' : 'end';
   return result;
 };
 
@@ -117,7 +117,7 @@ export const nameTransform = (
 ): string => {
   const nodeType = d.type;
   const x0 = d.x0 || 0;
-  const offsetY = x0 < chartWidth / 2 ? 0 : +nodeWidth(d) / 2;
+  const offsetY = x0 < (3 * chartWidth) / 4 ? 0 : +nodeWidth(d) / 2;
   let transform = ';';
   switch (nodeType) {
     case 'start of period':

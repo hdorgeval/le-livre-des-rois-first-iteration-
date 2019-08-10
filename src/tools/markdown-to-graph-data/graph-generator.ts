@@ -55,10 +55,11 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/#/gi, '').trim(),
         type: 'unknown',
+        level: 1,
       };
       links.push({
         weight: 20,
-        source: { id: 'root', type: 'start of period', name: '' },
+        source: { id: 'root', type: 'start of period', name: '', level: 0 },
         target: targetNode,
       });
       parentNodes.set('#', targetNode);
@@ -71,11 +72,14 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/##/gi, '').trim(),
         type: 'unknown',
+        level: 2,
       };
       parentNodes.set('##', targetNode);
       links.push({
         weight: 20,
-        source: { ...(parentNodes.get('#') || { id: 'foo', type: 'unknown', name: 'bar' }) },
+        source: {
+          ...(parentNodes.get('#') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
+        },
         target: targetNode,
       });
       previousLevel = '##';
@@ -92,12 +96,18 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/>/gi, '').trim(),
         type: 'unknown',
+        level: previousLevel.length + 1,
       };
       parentNodes.set('>', targetNode);
       links.push({
         weight: 20,
         source: {
-          ...(parentNodes.get(previousLevel) || { id: 'foo', type: 'unknown', name: 'bar' }),
+          ...(parentNodes.get(previousLevel) || {
+            id: 'foo',
+            type: 'unknown',
+            name: 'bar',
+            level: -1,
+          }),
         },
         target: targetNode,
       });
@@ -109,11 +119,14 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/>/gi, '').trim(),
         type: 'unknown',
+        level: previousLevel.length + 2,
       };
       parentNodes.set('>>', targetNode);
       links.push({
         weight: 20,
-        source: { ...(parentNodes.get('>') || { id: 'foo', type: 'unknown', name: 'bar' }) },
+        source: {
+          ...(parentNodes.get('>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
+        },
         target: targetNode,
       });
       return;
@@ -124,11 +137,14 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/>/gi, '').trim(),
         type: 'unknown',
+        level: previousLevel.length + 3,
       };
       parentNodes.set('>>>', targetNode);
       links.push({
         weight: 20,
-        source: { ...(parentNodes.get('>>') || { id: 'foo', type: 'unknown', name: 'bar' }) },
+        source: {
+          ...(parentNodes.get('>>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
+        },
         target: targetNode,
       });
       return;
@@ -139,11 +155,14 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/>/gi, '').trim(),
         type: 'unknown',
+        level: previousLevel.length + 4,
       };
       parentNodes.set('>>>>', targetNode);
       links.push({
         weight: 20,
-        source: { ...(parentNodes.get('>>>') || { id: 'foo', type: 'unknown', name: 'bar' }) },
+        source: {
+          ...(parentNodes.get('>>>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
+        },
         target: targetNode,
       });
       return;
@@ -154,6 +173,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
         id: uuid(),
         name: line.replace(/###/gi, '').trim(),
         type: 'unknown',
+        level: 3,
       };
       parentNodes.set('###', targetNode);
 
@@ -237,6 +257,40 @@ export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
   });
   return implicitLinks;
 };
+
+export const getIdenticalLinks = (nodes: StoryNode[]): StoryLink[] => {
+  const implicitLinks: StoryLink[] = [];
+  nodes.forEach((node): void => {
+    const isALreadyLinked =
+      implicitLinks.filter(
+        (link): boolean => link.source.id === node.id || link.target.id === node.id,
+      ).length > 0;
+
+    if (isALreadyLinked) {
+      return;
+    }
+    nodes
+      .filter(
+        (referencedNode): boolean =>
+          referencedNode.name === node.name && referencedNode.id !== node.id && node.id !== 'root',
+      )
+      .forEach((referencedNode): void => {
+        // prettier-ignore
+        node.level < referencedNode.level
+          ? implicitLinks.push({
+            weight: 20,
+            source: referencedNode,
+            target: node,
+          })
+          : implicitLinks.push({
+            weight: 20,
+            source: node,
+            target: referencedNode,
+          });
+      });
+  });
+  return implicitLinks;
+};
 export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const story = readAllLinesInFile(storyFile)
     .map((line): string => line.trim())
@@ -249,6 +303,7 @@ export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const nodes = createNodesFrom(links);
   links.push(...getImplicitLinks(nodes));
   setLinksWeight(links, nodes);
+  links.push(...getIdenticalLinks(nodes));
   return {
     nodes,
     links,

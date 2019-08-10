@@ -57,7 +57,19 @@ export const renderD3 = (
   const colorScale = d3
     .scaleOrdinal<string>()
     .domain(graphNodes.map((n: GraphNodeProps): string => n.name))
-    .range(['gold', 'blue', 'green', 'yellow', 'grey', 'darkgreen', 'pink', 'slateblue']);
+    .range([
+      'gold',
+      'blue',
+      'green',
+      'yellow',
+      'royalblue',
+      'grey',
+      'darkgreen',
+      'goldenrod',
+      'slateblue',
+      'lightseagreen',
+      'indianred',
+    ]);
   const color = (name: string): string => {
     const sanitizedName = name.replace(/\s/gi, '');
     return colorScale(sanitizedName);
