@@ -6,7 +6,7 @@ export interface AppProps {
 }
 
 const chartProps: ChartProps = {
-  width: 1200,
+  width: 1400,
   height: 600,
   textColor: 'black',
   margin: {

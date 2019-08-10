@@ -202,12 +202,40 @@ export const setLinksWeight = (links: StoryLink[], nodes: StoryNode[]): void => 
       .map((link): number => link.weight)
       .reduce((previousValue, currentValue): number => previousValue + currentValue, 0);
 
-    const parentLink = links.filter((link): boolean => link.target.id === node.id).pop();
+    const parentLinks = links.filter((link): boolean => link.target.id === node.id);
+    if (parentLinks.length == 0) {
+      continue;
+    }
+    const parentLink = parentLinks.shift();
+    const cumulatedWeightOfImplicitLinks = parentLinks
+      .map((link): number => link.weight)
+      .reduce((previousValue, currentValue): number => previousValue + currentValue, 0);
+
     if (parentLink === undefined) {
       continue;
     }
-    parentLink.weight = cumulatedWeightOfNodeChildren;
+    parentLink.weight = cumulatedWeightOfNodeChildren - cumulatedWeightOfImplicitLinks;
   }
+};
+export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
+  const implicitLinks: StoryLink[] = [];
+  nodes.forEach((node): void => {
+    nodes
+      .filter(
+        (referencedNode): boolean =>
+          referencedNode.name.endsWith(node.name) &&
+          referencedNode.name !== node.name &&
+          node.id !== 'root',
+      )
+      .forEach((referencedNode): void => {
+        implicitLinks.push({
+          weight: 20,
+          source: referencedNode,
+          target: node,
+        });
+      });
+  });
+  return implicitLinks;
 };
 export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const story = readAllLinesInFile(storyFile)
@@ -219,7 +247,7 @@ export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   links.push(...getStoryLinks(story));
 
   const nodes = createNodesFrom(links);
-
+  links.push(...getImplicitLinks(nodes));
   setLinksWeight(links, nodes);
   return {
     nodes,
