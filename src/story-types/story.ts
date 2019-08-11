@@ -17,3 +17,6 @@ export interface StoryData {
   links: StoryLink[];
   nodes: StoryNode[];
 }
+
+const typeMappings = new Map<string, StoryNodeType>();
+typeMappings.set('Balk', 'town');
