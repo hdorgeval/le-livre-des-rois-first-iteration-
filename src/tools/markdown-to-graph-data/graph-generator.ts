@@ -1,6 +1,9 @@
+import { extractNameFrom } from './extract-node-name-from-line';
+import { createDefaultNode } from './create-default-node';
+import { rootNode } from './root-node';
+import { undefinedNode } from './undefined-node';
 import { readAllLinesInFile } from '../fs/read-all-lines-in-file';
 import { StoryLink, StoryData, StoryNode } from '../../story-types';
-import uuid from 'uuid/v4';
 import { PathLike, writeFileSync } from 'fs';
 import { dirname } from 'path';
 import { EOL } from 'os';
@@ -51,15 +54,11 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
   let previousLevel = '.';
   story.forEach((line): void => {
     if (line.startsWith('# ')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/#/gi, '').trim(),
-        type: 'unknown',
-        level: 1,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
       links.push({
         weight: 20,
-        source: { id: 'root', type: 'start of period', name: '', level: 0 },
+        source: rootNode,
         target: targetNode,
       });
       parentNodes.set('#', targetNode);
@@ -68,17 +67,15 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
     }
 
     if (line.startsWith('## ')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/##/gi, '').trim(),
-        type: 'unknown',
-        level: 2,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = 2;
+
       parentNodes.set('##', targetNode);
       links.push({
         weight: 20,
         source: {
-          ...(parentNodes.get('#') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
+          ...(parentNodes.get('#') || undefinedNode),
         },
         target: targetNode,
       });
@@ -92,22 +89,14 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       !line.startsWith('> > >') &&
       !line.startsWith('> > > >')
     ) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/>/gi, '').trim(),
-        type: 'unknown',
-        level: previousLevel.length + 1,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = previousLevel.length + 1;
       parentNodes.set('>', targetNode);
       links.push({
         weight: 20,
         source: {
-          ...(parentNodes.get(previousLevel) || {
-            id: 'foo',
-            type: 'unknown',
-            name: 'bar',
-            level: -1,
-          }),
+          ...(parentNodes.get(previousLevel) || undefinedNode),
         },
         target: targetNode,
       });
@@ -115,66 +104,48 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
     }
 
     if (line.startsWith('> > ') && !line.startsWith('> > >') && !line.startsWith('> > > >')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/>/gi, '').trim(),
-        type: 'unknown',
-        level: previousLevel.length + 2,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = previousLevel.length + 2;
       parentNodes.set('>>', targetNode);
       links.push({
         weight: 20,
-        source: {
-          ...(parentNodes.get('>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
-        },
+        source: { ...(parentNodes.get('>') || undefinedNode) },
         target: targetNode,
       });
       return;
     }
 
     if (line.startsWith('> > > ') && !line.startsWith('> > > >')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/>/gi, '').trim(),
-        type: 'unknown',
-        level: previousLevel.length + 3,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = previousLevel.length + 3;
       parentNodes.set('>>>', targetNode);
       links.push({
         weight: 20,
-        source: {
-          ...(parentNodes.get('>>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
-        },
+        source: { ...(parentNodes.get('>>') || undefinedNode) },
         target: targetNode,
       });
       return;
     }
 
     if (line.startsWith('> > > > ') && !line.startsWith('> > > > >')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/>/gi, '').trim(),
-        type: 'unknown',
-        level: previousLevel.length + 4,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = previousLevel.length + 4;
       parentNodes.set('>>>>', targetNode);
       links.push({
         weight: 20,
-        source: {
-          ...(parentNodes.get('>>>') || { id: 'foo', type: 'unknown', name: 'bar', level: -1 }),
-        },
+        source: { ...(parentNodes.get('>>>') || undefinedNode) },
         target: targetNode,
       });
       return;
     }
 
     if (line.startsWith('### ')) {
-      const targetNode: StoryNode = {
-        id: uuid(),
-        name: line.replace(/###/gi, '').trim(),
-        type: 'unknown',
-        level: 3,
-      };
+      const nodeName = extractNameFrom(line);
+      const targetNode: StoryNode = createDefaultNode(nodeName);
+      targetNode.level = 3;
       parentNodes.set('###', targetNode);
 
       const leafNodes = getAllLeavesOf(parentNodes.get('##'), links);

@@ -9,6 +9,13 @@ export interface StoryNode {
   id: string;
   type: StoryNodeType;
   level: number;
+  image: DataImage | null;
+}
+
+export interface DataImage {
+  data: string;
+  type: 'map' | 'photo' | 'unknown';
+  url?: string;
 }
 
 export type StoryNodeType = 'start of period' | 'end of period' | 'unknown' | 'town' | 'king';
