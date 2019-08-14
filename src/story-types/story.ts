@@ -25,5 +25,7 @@ export interface StoryData {
   nodes: StoryNode[];
 }
 
-const typeMappings = new Map<string, StoryNodeType>();
-typeMappings.set('Balk', 'town');
+export interface StoryNodeTypeMapping {
+  [key: string]: StoryNodeType;
+}
+export const storyNodeTypeMapping: StoryNodeTypeMapping = { Balkh: 'town' };
