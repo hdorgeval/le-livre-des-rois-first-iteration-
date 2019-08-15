@@ -1,4 +1,4 @@
-import { StoryNode, StoryNodeType, storyNodeTypeMapping } from '../../story-types';
+import { StoryNode, StoryNodeType, storyNodeTypeMapping, StoryLink } from '../../story-types';
 import uuid from 'uuid/v4';
 
 export const getNodeTypeFrom = (name: string): StoryNodeType => {
@@ -9,9 +9,18 @@ export const getNodeTypeFrom = (name: string): StoryNodeType => {
   }
   return 'unknown';
 };
-export const createDefaultNode = (name: string): StoryNode => {
+
+export const getNodeWithSameName = (name: string, links: StoryLink[]): StoryNode | null => {
+  const nodeWithSameName = links
+    .map((link): StoryNode => link.target)
+    .filter((node): boolean => node.name === name)
+    .shift();
+  return nodeWithSameName ? nodeWithSameName : null;
+};
+export const createDefaultNode = (name: string, links: StoryLink[]): StoryNode => {
+  const nodeWithSameName = getNodeWithSameName(name, links);
   return {
-    id: uuid(),
+    id: nodeWithSameName ? nodeWithSameName.id : uuid(),
     name,
     type: getNodeTypeFrom(name),
     level: 1,

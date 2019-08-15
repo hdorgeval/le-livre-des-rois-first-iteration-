@@ -55,7 +55,8 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
   story.forEach((line): void => {
     if (line.startsWith('# ')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
+      targetNode.level = 1;
       links.push({
         weight: 20,
         source: rootNode,
@@ -68,7 +69,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
     if (line.startsWith('## ')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = 2;
 
       parentNodes.set('##', targetNode);
@@ -90,7 +91,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       !line.startsWith('> > > >')
     ) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = previousLevel.length + 1;
       parentNodes.set('>', targetNode);
       links.push({
@@ -105,7 +106,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
     if (line.startsWith('> > ') && !line.startsWith('> > >') && !line.startsWith('> > > >')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = previousLevel.length + 2;
       parentNodes.set('>>', targetNode);
       links.push({
@@ -118,7 +119,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
     if (line.startsWith('> > > ') && !line.startsWith('> > > >')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = previousLevel.length + 3;
       parentNodes.set('>>>', targetNode);
       links.push({
@@ -131,7 +132,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
     if (line.startsWith('> > > > ') && !line.startsWith('> > > > >')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = previousLevel.length + 4;
       parentNodes.set('>>>>', targetNode);
       links.push({
@@ -144,7 +145,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
     if (line.startsWith('### ')) {
       const nodeName = extractNameFrom(line);
-      const targetNode: StoryNode = createDefaultNode(nodeName);
+      const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = 3;
       parentNodes.set('###', targetNode);
 
@@ -228,40 +229,6 @@ export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
   });
   return implicitLinks;
 };
-
-export const getIdenticalLinks = (nodes: StoryNode[]): StoryLink[] => {
-  const implicitLinks: StoryLink[] = [];
-  nodes.forEach((node): void => {
-    const isALreadyLinked =
-      implicitLinks.filter(
-        (link): boolean => link.source.id === node.id || link.target.id === node.id,
-      ).length > 0;
-
-    if (isALreadyLinked) {
-      return;
-    }
-    nodes
-      .filter(
-        (referencedNode): boolean =>
-          referencedNode.name === node.name && referencedNode.id !== node.id && node.id !== 'root',
-      )
-      .forEach((referencedNode): void => {
-        // prettier-ignore
-        node.level < referencedNode.level
-          ? implicitLinks.push({
-            weight: 20,
-            source: referencedNode,
-            target: node,
-          })
-          : implicitLinks.push({
-            weight: 20,
-            source: node,
-            target: referencedNode,
-          });
-      });
-  });
-  return implicitLinks;
-};
 export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const story = readAllLinesInFile(storyFile)
     .map((line): string => line.trim())
@@ -274,7 +241,6 @@ export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
   const nodes = createNodesFrom(links);
   links.push(...getImplicitLinks(nodes));
   setLinksWeight(links, nodes);
-  links.push(...getIdenticalLinks(nodes));
   return {
     nodes,
     links,
