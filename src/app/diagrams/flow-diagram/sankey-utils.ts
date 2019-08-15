@@ -88,11 +88,18 @@ export const nameX = (
  * get Y position on the graph of the node's name
  * @param d
  */
-export const nameY = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number => {
+export const nameY = (
+  d: SankeyNode<GraphNodeProps, GraphLinkProps>,
+  chartWidth: number,
+): number => {
   const y0 = d.y0 || 0;
   const y1 = d.y1 || 0;
   const result = (y0 + y1) / 2;
-  return result;
+
+  const x0 = d.x0 || 0;
+  const mustOffset = x0 < (3 * chartWidth) / 4 && x0 + 100 > (3 * chartWidth) / 4;
+
+  return mustOffset ? result - 12 : result;
 };
 
 /**
@@ -122,7 +129,7 @@ export const nameTransform = (
   switch (nodeType) {
     case 'start of period':
     case 'end of period':
-      transform = `rotate(-90,${nameX(d, chartWidth) + offsetY},${nameY(d)})`;
+      transform = `rotate(-90,${nameX(d, chartWidth) + offsetY},${nameY(d, chartWidth)})`;
       break;
 
     default:

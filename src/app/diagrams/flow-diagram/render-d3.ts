@@ -140,7 +140,7 @@ export const renderD3 = (
     .data(graph.nodes)
     .join('text')
     .attr('x', (d): number => nameX(d, chartProps.width))
-    .attr('y', (d): number => nameY(d))
+    .attr('y', (d): number => nameY(d, chartProps.width))
     .attr('dy', '0.35em')
     .attr('text-anchor', (d): string => nameAnchor(d, chartProps.width))
     .attr('fill', chartProps.textColor)
