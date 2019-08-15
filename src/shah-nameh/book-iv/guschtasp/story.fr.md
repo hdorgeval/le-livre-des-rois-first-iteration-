@@ -6,8 +6,8 @@
 > >
 > > > devient prêtre;
 > > > ferme le temple;
-> > > se converti à la foi de Zerdouscht;
 > > > 30 ans debout devant Dieu;
+> > > se converti à la foi de Zerdouscht;
 
 # GUSCHTASP
 
@@ -16,13 +16,14 @@
 > fils ainé de LOHRASP;
 > hérite du trone de LOHRASP;
 > a pour fille Kitaboun;
+> a pour frère ZERIR;
 > rend la justice;
 > soumet le monde;
 >
 > > tous les rois payent leur tribut;
 > >
 > > > sauf le roi ARDJASP;
-
+>
 > se converti à la foi de Zerdouscht
 
 # Kitaboun
@@ -38,6 +39,10 @@
 > messager du créateur du monde;
 > grandi dans le palais de GUSCHTASP;
 
+# ZERIR
+
+> se converti à la foi de Zerdouscht
+
 # ARDJASP
 
 > roi de Chine;
@@ -45,3 +50,5 @@
 > demande à GUSCHTASP son tribut annuel;
 
 ![diagram](./diagram.fr.svg)
+
+Source gallica.bnf.fr / Bibliothèque nationale de France
