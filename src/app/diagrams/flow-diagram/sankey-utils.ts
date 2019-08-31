@@ -12,6 +12,15 @@ export const nodeX0 = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number =>
 };
 
 /**
+ * get the node’s maximum horizontal position, derived from node.depth
+ * @param d : graph node
+ */
+export const nodeX1 = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number => {
+  const result = d.x1 || 0;
+  return result;
+};
+
+/**
  * get the node’s minimum vertical position
  * @param d : graph node
  */
@@ -21,12 +30,21 @@ export const nodeY0 = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number =>
 };
 
 /**
+ * get the node’s maximum vertical position
+ * @param d : graph node
+ */
+export const nodeY1 = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number => {
+  const result = d.y1 || 0;
+  return result;
+};
+
+/**
  * get the node’s height
  * @param d : graph node
  */
 export const nodeHeight = (d: SankeyNode<GraphNodeProps, GraphLinkProps>): number => {
-  const y1 = d.y1 || 24;
-  const y0 = d.y0 || 0;
+  const y1 = nodeY1(d);
+  const y0 = nodeY0(d);
   return y1 - y0;
 };
 
@@ -78,8 +96,8 @@ export const nameX = (
   d: SankeyNode<GraphNodeProps, GraphLinkProps>,
   chartWidth: number,
 ): number => {
-  const x0 = d.x0 || 0;
-  const x1 = d.x1 || 0;
+  const x0 = nodeX0(d);
+  const x1 = nodeX1(d);
   const result = x0 < (3 * chartWidth) / 4 ? x1 + 10 : x0 - 5;
   return result;
 };
@@ -92,14 +110,15 @@ export const nameY = (
   d: SankeyNode<GraphNodeProps, GraphLinkProps>,
   chartWidth: number,
 ): number => {
-  const y0 = d.y0 || 0;
-  const y1 = d.y1 || 0;
-  const result = (y0 + y1) / 2;
+  const y0 = nodeY0(d);
+  const y1 = nodeY1(d);
+  const middlePosition = (y1 - y0) / 2 + y0;
+  const x0 = nodeX0(d);
 
-  const x0 = d.x0 || 0;
-  const mustOffset = x0 < (3 * chartWidth) / 4 && x0 + 100 > (3 * chartWidth) / 4;
+  const mustOffset =
+    nodeHeight(d) > 30 && x0 < (3 * chartWidth) / 4 && x0 + 200 > (3 * chartWidth) / 4;
 
-  return mustOffset ? result - 12 : result;
+  return mustOffset ? middlePosition - 10 : middlePosition;
 };
 
 /**
@@ -113,7 +132,7 @@ export const nameAnchor = (
   if (d.type === 'end of period' || d.type === 'start of period') {
     return 'start';
   }
-  const x0 = d.x0 || 0;
+  const x0 = nodeX0(d);
   const result = x0 < (3 * chartWidth) / 4 ? 'start' : 'end';
   return result;
 };
@@ -123,7 +142,7 @@ export const nameTransform = (
   chartWidth: number,
 ): string => {
   const nodeType = d.type;
-  const x0 = d.x0 || 0;
+  const x0 = nodeX0(d);
   const offsetY = x0 < (3 * chartWidth) / 4 ? 0 : +nodeWidth(d) / 2;
   let transform = ';';
   switch (nodeType) {
