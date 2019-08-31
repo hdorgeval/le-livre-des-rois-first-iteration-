@@ -10,6 +10,8 @@ export interface StoryNode {
   type: StoryNodeType;
   level: number;
   image: DataImage | null;
+  weight: number;
+  isLeaf: boolean;
 }
 
 export interface DataImage {
