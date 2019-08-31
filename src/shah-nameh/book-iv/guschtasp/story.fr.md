@@ -18,13 +18,14 @@
 > a pour fille Kitaboun;
 > a pour frère ZERIR;
 > rend la justice;
-> soumet le monde;
+>
+> > soumet le monde;
+> >
+> > > se converti à la foi de Zerdouscht
 >
 > > tous les rois payent leur tribut;
 > >
 > > > sauf le roi ARDJASP;
->
-> se converti à la foi de Zerdouscht
 
 # Kitaboun
 
@@ -36,8 +37,10 @@
 # ZERDOUSCHT
 
 > paraît sur la terre;
-> messager du créateur du monde;
-> grandi dans le palais de GUSCHTASP;
+>
+> > messager du créateur du monde;
+> >
+> > > grandi dans le palais de GUSCHTASP;
 
 # ZERIR
 
@@ -48,6 +51,41 @@
 > roi de Chine;
 > roi du Touran;
 > demande à GUSCHTASP son tribut annuel;
+
+# chaque médecin
+
+> se rend auprès de GUSCHTASP;
+> se ceint du koschti;
+>
+> > se converti à la foi de Zerdouscht
+
+# chaque savant
+
+> se rend auprès de GUSCHTASP;
+> se ceint du koschti;
+>
+> > se converti à la foi de Zerdouscht
+
+# chaque puissant
+
+> se rend auprès de GUSCHTASP;
+> se ceint du koschti;
+>
+> > se converti à la foi de Zerdouscht
+
+# chaque brave
+
+> se rend auprès de GUSCHTASP;
+> se ceint du koschti;
+>
+> > se converti à la foi de Zerdouscht
+
+# chaque chef
+
+> se rend auprès de GUSCHTASP;
+> se ceint du koschti;
+>
+> > se converti à la foi de Zerdouscht
 
 ![diagram](./diagram.fr.svg)
 
