@@ -2,6 +2,9 @@ import { extractNameFrom } from './extract-node-name-from-line';
 import { createDefaultNode } from './create-default-node';
 import { rootNode } from './root-node';
 import { undefinedNode } from './undefined-node';
+import { removeRootLinksOnChildLinks } from './remove-root-link-on-child-link';
+import { computeLinksWeight } from './compute-links-weight';
+import { getNodesOf } from './create-nodes-from-links';
 import { readAllLinesInFile } from '../fs/read-all-lines-in-file';
 import { StoryLink, StoryData, StoryNode } from '../../story-types';
 import { PathLike, writeFileSync } from 'fs';
@@ -58,7 +61,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       const targetNode: StoryNode = createDefaultNode(nodeName, links);
       targetNode.level = 1;
       links.push({
-        weight: 20,
+        weight: 0,
         source: rootNode,
         target: targetNode,
       });
@@ -74,7 +77,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
       parentNodes.set('##', targetNode);
       links.push({
-        weight: 20,
+        weight: 0,
         source: {
           ...(parentNodes.get('#') || undefinedNode),
         },
@@ -95,7 +98,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       targetNode.level = previousLevel.length + 1;
       parentNodes.set('>', targetNode);
       links.push({
-        weight: 20,
+        weight: 0,
         source: {
           ...(parentNodes.get(previousLevel) || undefinedNode),
         },
@@ -110,7 +113,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       targetNode.level = previousLevel.length + 2;
       parentNodes.set('>>', targetNode);
       links.push({
-        weight: 20,
+        weight: 0,
         source: { ...(parentNodes.get('>') || undefinedNode) },
         target: targetNode,
       });
@@ -123,7 +126,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       targetNode.level = previousLevel.length + 3;
       parentNodes.set('>>>', targetNode);
       links.push({
-        weight: 20,
+        weight: 0,
         source: { ...(parentNodes.get('>>') || undefinedNode) },
         target: targetNode,
       });
@@ -136,7 +139,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       targetNode.level = previousLevel.length + 4;
       parentNodes.set('>>>>', targetNode);
       links.push({
-        weight: 20,
+        weight: 0,
         source: { ...(parentNodes.get('>>>') || undefinedNode) },
         target: targetNode,
       });
@@ -152,7 +155,7 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
       const leafNodes = getAllLeavesOf(parentNodes.get('##'), links);
       leafNodes.forEach((leafNode): number =>
         links.push({
-          weight: 20,
+          weight: 0,
           source: {
             ...leafNode,
           },
@@ -166,49 +169,6 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
   return links;
 };
-export const createNodesFrom = (links: StoryLink[]): StoryNode[] => {
-  const mapNodes = new Map<string, StoryNode>();
-  links.forEach((link): void => {
-    mapNodes.set(link.source.id, link.source);
-    mapNodes.set(link.target.id, link.target);
-  });
-
-  const nodes = Array.from(mapNodes.values());
-  return nodes;
-};
-export const setLinksWeight = (links: StoryLink[], nodes: StoryNode[]): void => {
-  const clonedNodes = [...nodes];
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const node = clonedNodes.pop();
-    if (node === undefined) {
-      return;
-    }
-
-    const nodeLinks = links.filter((link): boolean => link.source.id === node.id);
-    if (nodeLinks.length === 0) {
-      continue;
-    }
-
-    const cumulatedWeightOfNodeChildren = nodeLinks
-      .map((link): number => link.weight)
-      .reduce((previousValue, currentValue): number => previousValue + currentValue, 0);
-
-    const parentLinks = links.filter((link): boolean => link.target.id === node.id);
-    if (parentLinks.length == 0) {
-      continue;
-    }
-    const parentLink = parentLinks.shift();
-    const cumulatedWeightOfImplicitLinks = parentLinks
-      .map((link): number => link.weight)
-      .reduce((previousValue, currentValue): number => previousValue + currentValue, 0);
-
-    if (parentLink === undefined) {
-      continue;
-    }
-    parentLink.weight = cumulatedWeightOfNodeChildren - cumulatedWeightOfImplicitLinks;
-  }
-};
 export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
   const implicitLinks: StoryLink[] = [];
   nodes.forEach((node): void => {
@@ -221,7 +181,7 @@ export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
       )
       .forEach((referencedNode): void => {
         implicitLinks.push({
-          weight: 20,
+          weight: 0,
           source: referencedNode,
           target: node,
         });
@@ -234,13 +194,14 @@ export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
     .map((line): string => line.trim())
     .filter((line): boolean => line.length > 0);
 
-  const links: StoryLink[] = [];
+  const allLinks: StoryLink[] = [];
 
-  links.push(...getStoryLinks(story));
+  allLinks.push(...getStoryLinks(story));
 
-  const nodes = createNodesFrom(links);
-  links.push(...getImplicitLinks(nodes));
-  setLinksWeight(links, nodes);
+  const nodes = getNodesOf(allLinks);
+  allLinks.push(...getImplicitLinks(nodes));
+  const links = removeRootLinksOnChildLinks(allLinks);
+  computeLinksWeight(links);
   return {
     nodes,
     links,

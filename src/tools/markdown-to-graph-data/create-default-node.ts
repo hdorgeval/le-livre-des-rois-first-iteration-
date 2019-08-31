@@ -25,5 +25,7 @@ export const createDefaultNode = (name: string, links: StoryLink[]): StoryNode =
     type: getNodeTypeFrom(name),
     level: 1,
     image: null,
+    weight: 0,
+    isLeaf: false,
   };
 };

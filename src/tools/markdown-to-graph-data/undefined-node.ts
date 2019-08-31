@@ -6,4 +6,6 @@ export const undefinedNode: StoryNode = {
   name: '',
   level: -1,
   image: null,
+  weight: 0,
+  isLeaf: false,
 };
