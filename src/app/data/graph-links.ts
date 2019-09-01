@@ -6,7 +6,7 @@ export interface GraphLinkProps {
 }
 
 export const graphLinks: GraphLinkProps[] = [
-  { source: 'root', target: '95fb18c9-608a-469c-a473-7728fbe941ce', value: 10 },
-  { source: 'root', target: '5b89f468-cff5-4cc7-a892-02b5c03c6bf5', value: 10 },
-  { source: 'root', target: '575b6321-4f1d-4951-a6bd-1e057007e362', value: 10 },
+  { source: 'root', target: '572d124a-5576-472d-a4f2-ba040057ee3c', value: 10 },
+  { source: 'root', target: 'f9f9eb8d-3ff1-47cb-a580-e588cecd5518', value: 10 },
+  { source: 'root', target: '68270d42-f981-40d8-86dd-fb9ea4371556', value: 10 },
 ];

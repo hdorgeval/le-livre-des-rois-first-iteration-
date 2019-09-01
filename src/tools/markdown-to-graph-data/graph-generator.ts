@@ -215,8 +215,9 @@ export const convertMarkdownToGraphData = (
   const graphData = createGraphDataFrom(storyFile);
   const graphNodeProps = `
 export interface GraphNodeProps {
-  name: string;
   id: string;
+  level: number;
+  name: string;
   type: 'start of period' | 'end of period' | 'unknown' | 'town' | 'king';
 }
 `;
@@ -224,7 +225,9 @@ export interface GraphNodeProps {
   graphNodesTsLines.push(graphNodeProps);
   graphNodesTsLines.push(`export const graphNodes: GraphNodeProps[] = [`);
   graphData.nodes.forEach((node): void => {
-    graphNodesTsLines.push(`  { name: '${node.name}', type: '${node.type}', id: '${node.id}' },`);
+    graphNodesTsLines.push(
+      `  { name: '${node.name}', type: '${node.type}', id: '${node.id}', level: ${node.level} },`,
+    );
   });
   graphNodesTsLines.push(`];`);
   graphNodesTsLines.push(``);
