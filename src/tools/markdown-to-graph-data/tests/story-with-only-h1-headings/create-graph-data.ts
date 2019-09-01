@@ -1,9 +1,7 @@
 import { convertMarkdownToGraphData } from '../../graph-generator';
-import { getFilesInDirectory } from '../../../fs';
+import { getFirstMarkdownInDirectory } from '../../../fs/get-first-markdown-file-in-directory';
 
-const storyFile = getFilesInDirectory(`${__dirname}`, (path): boolean =>
-  path.endsWith('.md'),
-).shift();
+const storyFile = getFirstMarkdownInDirectory(`${__dirname}`);
 
 if (storyFile) {
   const targetDirectory = `${process.cwd()}/src/app/data`;

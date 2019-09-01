@@ -1,10 +1,12 @@
 import 'jest';
 import * as SUT from '../../graph-generator';
 import { StoryNodeType } from '../../../../story-types';
-describe('Markdown Boundaries', (): void => {
+import { getFirstMarkdownInDirectory } from '../../../fs/get-first-markdown-file-in-directory';
+
+describe('Markdown Analysis', (): void => {
   test('Should get H1 headings', (): void => {
     // Given
-    const story = `${__dirname}/story-with-only-h1-heading.md`;
+    const story = getFirstMarkdownInDirectory(`${__dirname}`);
 
     // When
     const data = SUT.createGraphDataFrom(story);

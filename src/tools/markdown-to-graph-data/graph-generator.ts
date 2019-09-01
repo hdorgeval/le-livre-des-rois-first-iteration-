@@ -190,7 +190,11 @@ export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
   });
   return implicitLinks;
 };
-export const createGraphDataFrom = (storyFile: PathLike): StoryData => {
+export const createGraphDataFrom = (storyFile: PathLike | undefined): StoryData => {
+  if (storyFile === undefined) {
+    throw new Error('Story file is undefined');
+  }
+
   const story = readAllLinesInFile(storyFile)
     .map((line): string => line.trim())
     .filter((line): boolean => line.length > 0);
