@@ -8,7 +8,7 @@ export interface GraphNodeProps {
 
 export const graphNodes: GraphNodeProps[] = [
   { name: '', type: 'start of period', id: 'root', level: 0 },
-  { name: 'episode 1', type: 'unknown', id: '572d124a-5576-472d-a4f2-ba040057ee3c', level: 1 },
-  { name: 'episode 2', type: 'unknown', id: 'f9f9eb8d-3ff1-47cb-a580-e588cecd5518', level: 1 },
-  { name: 'episode 3', type: 'unknown', id: '68270d42-f981-40d8-86dd-fb9ea4371556', level: 1 },
+  { name: 'episode 1', type: 'unknown', id: 'aaccc2e6-0f0f-4efb-8980-20e671ebb34c', level: 1 },
+  { name: 'episode 2', type: 'unknown', id: '82836361-d0af-4541-af4e-78b5508c316d', level: 1 },
+  { name: 'episode 3', type: 'unknown', id: 'd839ec41-611f-4f6d-94e3-e8fdfd2dc825', level: 1 },
 ];

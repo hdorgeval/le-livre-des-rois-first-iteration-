@@ -5,6 +5,7 @@ import { undefinedNode } from './undefined-node';
 import { removeRootLinksOnChildLinks } from './remove-root-link-on-child-link';
 import { computeLinksWeight } from './compute-links-weight';
 import { getNodesOf } from './create-nodes-from-links';
+import { getStoryLengthOf } from './get-story-length';
 import { readAllLinesInFile } from '../fs/read-all-lines-in-file';
 import { StoryLink, StoryData, StoryNode } from '../../story-types';
 import { PathLike, writeFileSync } from 'fs';
@@ -257,4 +258,21 @@ export interface GraphLinkProps {
 
   const graphLinksTsContent = graphLinksTsLines.join(EOL);
   writeFileSync(`${targetDirectory}/graph-links.ts`, graphLinksTsContent);
+
+  const storyLength = getStoryLengthOf(graphData.links);
+
+  const graphMetadataProps = `
+export interface GraphMetadataProps {
+  storyLength: number;
+}
+`;
+
+  const graphMetadataTsLines: string[] = [];
+  graphMetadataTsLines.push(graphMetadataProps);
+  graphMetadataTsLines.push(`export const graphMetadata: GraphMetadataProps = {`);
+  graphMetadataTsLines.push(`  storyLength: ${storyLength},`);
+  graphMetadataTsLines.push(`};`);
+  graphMetadataTsLines.push(``);
+  const graphMetadataTsContent = graphMetadataTsLines.join(EOL);
+  writeFileSync(`${targetDirectory}/graph-metadata.ts`, graphMetadataTsContent);
 };

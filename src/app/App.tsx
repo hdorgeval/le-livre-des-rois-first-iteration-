@@ -1,6 +1,8 @@
 import { Sankey, ChartProps } from './diagrams/flow-diagram/Sankey';
 import { graphNodes, GraphNodeProps } from './data/graph-nodes';
 import { graphLinks, GraphLinkProps } from './data/graph-links';
+
+import { graphMetadata } from './data/graph-metadata';
 import * as React from 'react';
 import { SankeyGraph } from 'd3-sankey';
 
@@ -13,6 +15,8 @@ const data: SankeyGraph<GraphNodeProps, GraphLinkProps> = {
   nodes: graphNodes,
 };
 
+const storyLength = graphMetadata.storyLength;
+
 const chartProps: ChartProps = {
   data,
   height: 600,
@@ -23,7 +27,7 @@ const chartProps: ChartProps = {
     top: 30,
   },
   textColor: 'black',
-  width: 1700,
+  width: 250 * storyLength,
 };
 // eslint-disable-next-line react/prop-types
 export const App: React.FunctionComponent<AppProps> = ({ name }): React.ReactElement | null => {
