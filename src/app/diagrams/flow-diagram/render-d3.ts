@@ -1,5 +1,3 @@
-import { graphNodes, GraphNodeProps } from './data/graph-nodes';
-import { graphLinks, GraphLinkProps } from './data/graph-links';
 import { ChartProps } from './Sankey';
 import {
   nodeX0,
@@ -14,6 +12,8 @@ import {
   nodeWidth,
   nodeId,
 } from './sankey-utils';
+import { GraphNodeProps } from '../../data/graph-nodes';
+import { GraphLinkProps } from '../../data/graph-links';
 import * as d3 from 'd3';
 import {
   sankey,
@@ -47,16 +47,11 @@ export const renderD3 = (
       [drawingArea.width, drawingArea.height],
     ]);
 
-  const sankeyData: SankeyGraph<GraphNodeProps, GraphLinkProps> = {
-    nodes: graphNodes,
-    links: graphLinks,
-  };
-
-  const graph: SankeyGraph<GraphNodeProps, GraphLinkProps> = sankeyGenerator(sankeyData);
+  const graph: SankeyGraph<GraphNodeProps, GraphLinkProps> = sankeyGenerator(chartProps.data);
   const svg = d3.select(d3Container.current);
   const colorScale = d3
     .scaleOrdinal<string>()
-    .domain(graphNodes.map((n: GraphNodeProps): string => n.name))
+    .domain(chartProps.data.nodes.map((node): string => node.name))
     .range([
       'gold',
       'blue',

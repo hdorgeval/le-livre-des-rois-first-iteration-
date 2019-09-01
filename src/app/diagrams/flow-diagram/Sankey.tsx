@@ -1,12 +1,16 @@
 import { downloadSvg } from './download-svg';
 import { renderD3 } from './render-d3';
+import { GraphNodeProps } from '../../data/graph-nodes';
+import { GraphLinkProps } from '../../data/graph-links';
 import React, { ReactElement, useEffect, useRef } from 'react';
+import { SankeyGraph } from 'd3-sankey';
 
 export interface ChartProps {
   width: number;
   height: number;
   textColor: string;
   margin: ChartMargins;
+  data: SankeyGraph<GraphNodeProps, GraphLinkProps>;
 }
 
 export interface ChartMargins {
@@ -19,7 +23,7 @@ export interface ChartMargins {
 export const Sankey: React.FunctionComponent<ChartProps> = (chartProps): ReactElement | null => {
   const d3Container = useRef(null);
 
-  useEffect((): void => renderD3(d3Container, chartProps), [d3Container, chartProps, chartProps]);
+  useEffect((): void => renderD3(d3Container, chartProps), [d3Container, chartProps]);
 
   const onDownloadSvg: () => void = (): void => downloadSvg(d3Container);
 
@@ -28,8 +32,9 @@ export const Sankey: React.FunctionComponent<ChartProps> = (chartProps): ReactEl
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width={chartProps.width}
-          height={chartProps.height}
+          viewBox={`0 0 ${chartProps.width} ${chartProps.height}`}
+          height="400"
+          preserveAspectRatio="slice"
           ref={d3Container}
         />
       </div>

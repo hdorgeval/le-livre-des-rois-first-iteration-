@@ -1,5 +1,5 @@
-import { GraphNodeProps } from './data/graph-nodes';
-import { GraphLinkProps } from './data/graph-links';
+import { GraphNodeProps } from '../../data/graph-nodes';
+import { GraphLinkProps } from '../../data/graph-links';
 import { SankeyNode, SankeyLink } from 'd3-sankey';
 
 /**
