@@ -1,7 +1,6 @@
 import 'jest';
 import * as SUT from '../../../markdown-to-graph-data';
-import { StoryNodeType } from '../../../../story-types';
-import { getFirstMarkdownInDirectory } from '../../../fs';
+import { getFirstMarkdownInDirectory } from '../../../tools/fs';
 
 describe('Markdown Analysis', (): void => {
   test('Should get H1 headings', (): void => {
@@ -12,7 +11,7 @@ describe('Markdown Analysis', (): void => {
     const data = SUT.createGraphDataFrom(story);
 
     // Then
-    const expectedTypeOfRootNode: StoryNodeType = 'start of period';
+    const expectedTypeOfRootNode: SUT.StoryNodeType = 'start of period';
     expect(data.nodes[0].id).toBe('root');
     expect(data.nodes[0].weight).toBe(30);
     expect(data.nodes[0].type).toBe(expectedTypeOfRootNode);

@@ -1,5 +1,5 @@
 import { getLeafLinks } from './get-leaf-links';
-import { StoryLink } from '../../story-types';
+import { StoryLink } from './story-types';
 
 export const getStoryLengthOf = (links: StoryLink[]): number => {
   const leafLinks = getLeafLinks(links);

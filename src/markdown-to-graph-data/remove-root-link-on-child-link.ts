@@ -1,4 +1,4 @@
-import { StoryNode, StoryLink } from '../../story-types';
+import { StoryNode, StoryLink } from './story-types';
 
 export const removeRootLinksOnChildLinks = (links: StoryLink[]): StoryLink[] => {
   const rootLinks = links.filter((link): boolean => link.source.id === 'root');

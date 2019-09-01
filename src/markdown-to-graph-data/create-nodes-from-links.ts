@@ -1,4 +1,4 @@
-import { StoryNode, StoryLink } from '../../story-types';
+import { StoryNode, StoryLink } from './story-types';
 
 export const getNodesSetOf = (links: StoryLink[]): Map<string, StoryNode> => {
   const mapNodes = new Map<string, StoryNode>();

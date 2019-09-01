@@ -4,5 +4,5 @@ export interface GraphMetadataProps {
 }
 
 export const graphMetadata: GraphMetadataProps = {
-  storyLength: 1,
+  storyLength: 2,
 };

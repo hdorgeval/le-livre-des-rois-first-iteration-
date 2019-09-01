@@ -1,6 +1,6 @@
 import 'jest';
 import * as SUT from '../../graph-generator';
-import { StoryLink, StoryNode } from '../../../../story-types';
+import { StoryLink, StoryNode } from '../../story-types';
 describe('Markdown Analysis', (): void => {
   test('Should get the node type from its name', (): void => {
     // Given

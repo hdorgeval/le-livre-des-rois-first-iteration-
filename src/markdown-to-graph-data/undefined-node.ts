@@ -1,4 +1,4 @@
-import { StoryNode } from '../../story-types';
+import { StoryNode } from './story-types';
 
 export const undefinedNode: StoryNode = {
   id: 'undefined',

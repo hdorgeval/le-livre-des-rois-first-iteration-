@@ -1,7 +1,7 @@
 import { getTargetNodesOf, getNodesSetOf } from './create-nodes-from-links';
 import { undefinedNode } from './undefined-node';
 import { getLeafLinks } from './get-leaf-links';
-import { StoryLink, StoryNode } from '../../story-types';
+import { StoryLink, StoryNode } from './story-types';
 export const computeParentNodesWeightOnFirstLevel = (
   links: StoryLink[],
   allNodes: Map<string, StoryNode>,

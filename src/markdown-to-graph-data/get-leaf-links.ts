@@ -1,4 +1,4 @@
-import { StoryLink, StoryNode } from '../../story-types';
+import { StoryLink, StoryNode } from './story-types';
 
 export const getLeafLinks = (links: StoryLink[]): StoryLink[] => {
   const allTargetNodes = links.map((link): StoryNode => link.target);

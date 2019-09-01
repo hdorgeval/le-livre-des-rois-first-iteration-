@@ -1,4 +1,4 @@
-import { StoryNode, StoryNodeType, storyNodeTypeMapping, StoryLink } from '../../story-types';
+import { StoryNode, StoryNodeType, storyNodeTypeMapping, StoryLink } from './story-types';
 import uuid from 'uuid/v4';
 
 export const getNodeTypeFrom = (name: string): StoryNodeType => {
