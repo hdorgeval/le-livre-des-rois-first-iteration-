@@ -1,7 +1,7 @@
 import 'jest';
-import * as SUT from '../../graph-generator';
+import * as SUT from '../../../markdown-to-graph-data';
 import { StoryNodeType } from '../../../../story-types';
-import { getFirstMarkdownInDirectory } from '../../../fs/get-first-markdown-file-in-directory';
+import { getFirstMarkdownInDirectory } from '../../../fs';
 
 describe('Markdown Analysis', (): void => {
   test('Should get H1 headings', (): void => {

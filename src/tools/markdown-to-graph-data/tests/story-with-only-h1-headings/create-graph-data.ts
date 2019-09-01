@@ -1,5 +1,5 @@
-import { convertMarkdownToGraphData } from '../../graph-generator';
-import { getFirstMarkdownInDirectory } from '../../../fs/get-first-markdown-file-in-directory';
+import { convertMarkdownToGraphData } from '../../../markdown-to-graph-data';
+import { getFirstMarkdownInDirectory } from '../../../fs';
 
 const storyFile = getFirstMarkdownInDirectory(`${__dirname}`);
 
