@@ -7,6 +7,8 @@ import { computeLinksWeight } from './compute-links-weight';
 import { getNodesOf } from './create-nodes-from-links';
 import { getStoryLengthOf } from './get-story-length';
 import { StoryNode, StoryLink, StoryData } from './story-types';
+import { getImplicitLinksByMatchingEndOfName } from './get-implicit-links-between-nodes';
+import { reorderLinksByMatchingBeforeKeyword } from './reorder-links';
 import { readAllLinesInFile } from '../tools/fs/read-all-lines-in-file';
 import { PathLike, writeFileSync } from 'fs';
 import { dirname } from 'path';
@@ -170,26 +172,20 @@ export const getStoryLinks = (story: string[]): StoryLink[] => {
 
   return links;
 };
-export const getImplicitLinks = (nodes: StoryNode[]): StoryLink[] => {
-  const implicitLinks: StoryLink[] = [];
-  nodes.forEach((node): void => {
-    nodes
-      .filter(
-        (referencedNode): boolean =>
-          referencedNode.name.endsWith(node.name) &&
-          referencedNode.name !== node.name &&
-          node.id !== 'root',
-      )
-      .forEach((referencedNode): void => {
-        implicitLinks.push({
-          weight: 0,
-          source: referencedNode,
-          target: node,
-        });
-      });
-  });
-  return implicitLinks;
+
+export const remove = (
+  nodesToRemove: StoryNode[],
+): { from: (nodes: StoryNode[]) => StoryNode[] } => {
+  return {
+    from: (nodes: StoryNode[]): StoryNode[] => {
+      return nodes.filter(
+        (node): boolean =>
+          !nodesToRemove.some((nodeToRemove): boolean => nodeToRemove.id === node.id),
+      );
+    },
+  };
 };
+
 export const createGraphDataFrom = (storyFile: PathLike | undefined): StoryData => {
   if (storyFile === undefined) {
     throw new Error('Story file is undefined');
@@ -203,10 +199,13 @@ export const createGraphDataFrom = (storyFile: PathLike | undefined): StoryData 
 
   allLinks.push(...getStoryLinks(story));
 
-  const nodes = getNodesOf(allLinks);
-  allLinks.push(...getImplicitLinks(nodes));
-  const links = removeRootLinksOnChildLinks(allLinks);
+  const allNodes = getNodesOf(allLinks);
+  allLinks.push(...getImplicitLinksByMatchingEndOfName(allNodes));
+  const { orderedLinks, nodesToRemove } = reorderLinksByMatchingBeforeKeyword(allNodes, allLinks);
+  const links = removeRootLinksOnChildLinks(orderedLinks);
+  const nodes = remove(nodesToRemove).from(allNodes);
   computeLinksWeight(links);
+
   return {
     nodes,
     links,
@@ -230,9 +229,11 @@ export interface GraphNodeProps {
   graphNodesTsLines.push(graphNodeProps);
   graphNodesTsLines.push(`export const graphNodes: GraphNodeProps[] = [`);
   graphData.nodes.forEach((node): void => {
-    graphNodesTsLines.push(
-      `  { name: '${node.name}', type: '${node.type}', id: '${node.id}', level: ${node.level} },`,
-    );
+    const line = node.name.includes("'")
+      ? `  { name: "${node.name}", type: '${node.type}', id: '${node.id}', level: ${node.level} },`
+      : `  { name: '${node.name}', type: '${node.type}', id: '${node.id}', level: ${node.level} },`;
+
+    graphNodesTsLines.push(line);
   });
   graphNodesTsLines.push(`];`);
   graphNodesTsLines.push(``);
